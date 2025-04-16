@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tecnología con Alma - Diseño sensorial para mentes neurodivergentes.">
+  <meta name="keywords" content="tecnología, diseño sensorial, neurodivergentes, inclusión, app emocional">
   <title>Tecnología con Alma</title>
 
-  <!-- Metadatos para redes sociales y Google -->
+  <!-- Metadatos para SEO y redes sociales -->
   <meta property="og:image" content="https://github.com/Krystal18734/www.almatechdigital.com/raw/main/logo.png">
   <meta property="og:title" content="Tecnología con Alma">
   <meta property="og:description" content="Diseño sensorial para mentes neurodivergentes. Innovación no solo en lo que se crea, sino para quién se crea.">
@@ -14,12 +16,14 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
   <style>
+    /* Estilos adicionales */
     .emotion-box {
       transition: transform 0.2s ease-in-out;
     }
     .emotion-box:hover {
       transform: scale(1.05);
     }
+
     .chat-button {
       display: inline-block;
       margin-top: 1rem;
@@ -31,8 +35,17 @@
       text-decoration: none;
       transition: background-color 0.3s ease;
     }
+
     .chat-button:hover {
       background-color: #ffc1cb;
+    }
+    
+    /* Estilos para el logo */
+    #logo {
+      max-width: 300px;
+      height: auto;
+      display: block;
+      margin: 40px auto;
     }
   </style>
 </head>
@@ -40,9 +53,8 @@
 <body class="bg-gradient-to-b from-indigo-100 to-white min-h-screen p-6 text-gray-800">
   
   <!-- LOGO EN LA PARTE SUPERIOR -->
-  <img src="https://github.com/Krystal18734/www.almatechdigital.com/raw/main/logo.png" 
-       alt="Logo de AlmaTech Digital" 
-       style="max-width: 300px; height: auto; margin: 40px auto; display: block;" />
+  <img id="logo" src="https://github.com/Krystal18734/www.almatechdigital.com/raw/main/logo.png" 
+       alt="Logo de AlmaTech Digital" />
   
   <main class="max-w-4xl mx-auto text-center space-y-6">
     <h1 class="text-4xl md:text-6xl font-bold text-indigo-700">Tecnología con Alma</h1>
