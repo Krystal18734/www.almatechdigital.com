@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat con Alma</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #ffd6ff, #caffbf, #9bf6ff, #bdb2ff);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%}
+      50% {background-position: 100% 50%}
+      100% {background-position: 0% 50%}
+    }
+    #login, #chat {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      position: absolute;
+      top: 0; left: 0;
+    }
+    #login.active, #chat.active {
+      display: flex;
+    }
+    #nickname {
+      padding: 10px;
+      font-size: 20px;
+      border-radius: 15px;
+      border: none;
+      text-align: center;
+    }
+    #startChat {
+      margin-top: 15px;
+      background: #ffb703;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    #chatWindow {
+      background: white;
+      width: 95%;
+      height: 95%;
+      display: flex;
+      flex-direction: column;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      overflow: hidden;
+      position: relative;
+    }
+    #messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .message {
+      max-width: 60%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 15px;
+      color: white;
+      position: relative;
+    }
+    .mine {
+      align-self: flex-start;
+      background-color: #ff70a6;
+    }
+    .theirs {
+      align-self: flex-end;
+      background-color: #70d6ff;
+    }
+    .message .sender {
+      font-weight: bold;
+      display: block;
+      font-size: 14px;
+    }
+    #inputArea {
+      display: flex;
+      border-top: 2px solid #eee;
+    }
+    #messageInput {
+      flex: 1;
+      border: none;
+      padding: 15px;
+      font-size: 16px;
+    }
+    #sendMessage {
+      background-color: #06d6a0;
+      color: white;
+      border: none;
+      padding: 0 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    #emojiPanel {
+      overflow-y: scroll;
+      max-height: 100px;
+      display: flex;
+      flex-wrap: wrap;
+      border-top: 1px solid #ddd;
+      padding: 5px;
+      background: #f0f0f0;
+    }
+    .emoji {
+      font-size: 24px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    #rules {
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+      text-align: center;
+      padding: 10px;
+      color: #333;
+    }
+    #counter {
+      color: white;
+      font-size: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 5px 15px;
+      border-radius: 25px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="login" class="active">
+    <input type="text" id="nickname" placeholder="Escribe tu apodo" />
+    <button id="startChat">Comenzar Chat</button>
+  </div>
+
+  <div id="chat">
+    <div id="chatWindow">
+      <div id="counter">Usuarios: 0</div> <!-- El contador de usuarios está aquí dentro del chat -->
+      <div id="messages"></div>
+      <div id="emojiPanel"></div>
+      <div id="inputArea">
+        <input type="text" id="messageInput" placeholder="Escribe un mensaje..." />
+        <button id="sendMessage">Enviar</button>
+      </div>
+      <div id="rules">
+        Este chat es un espacio seguro para personas neurodivergentes. Sé respetuoso. Prohibido lenguaje ofensivo o discriminatorio.
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import {
+    getDatabase,
+    ref,
+    push,
+    onChildAdded,
+    onChildRemoved,
+    remove,
+    onDisconnect,
+    get
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC39Abdt2zQwWo4pACqYfNpN5bnEPTs2PM",
+    authDomain: "chatconalma-744d2.firebaseapp.com",
+    databaseURL: "https://chatconalma-744d2-default-rtdb.firebaseio.com",
+    projectId: "chatconalma-744d2",
+    storageBucket: "chatconalma-744d2.appspot.com",
+    messagingSenderId: "363828670663",
+    appId: "1:363828670663:web:aba9e7361ad3a991728ee2",
+    measurementId: "G-C05SCYKW4F"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const messagesRef = ref(db, "mensajes");
+  const usersRef = ref(db, "usuarios");
+
+  // 🔧 Limpiar usuarios fantasmas después de inicializar Firebase
+  get(usersRef).then(snapshot => {
+    const now = Date.now();
+    snapshot.forEach(child => {
+      const userData = child.val();
+      const key = child.key;
+      if (!userData.timestamp || now - userData.timestamp > 5 * 60 * 1000) {
+        remove(ref(db, `usuarios/${key}`));
+      }
+    });
+  });
+
+  let nickname = "";
+  let userKey = null;
+  const badWords = ["puta", "verga", "pendejo", "culero"];
+  let warnings = 0;
+  let usersCount = 0;
+
+  const login = document.getElementById("login");
+  const chat = document.getElementById("chat");
+  const nicknameInput = document.getElementById("nickname");
+  const startChatBtn = document.getElementById("startChat");
+  const messages = document.getElementById("messages");
+  const messageInput = document.getElementById("messageInput");
+  const sendMessage = document.getElementById("sendMessage");
+  const emojiPanel = document.getElementById("emojiPanel");
+  const counter = document.getElementById("counter");
+
+  const emojiList = [
+    "😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😉", "😊",
+    "😋", "😎", "😍", "😘", "🥰", "😗", "😙", "😚", "🙂", "🤗",
+    "🤩", "🤔", "🤨", "😐", "😑", "😶", "🙄", "😏", "😣", "😥",
+    "😮", "🤐", "😯", "😪", "😫", "🥱", "😴", "😌", "😛", "😜",
+    "😝", "🤤", "😒", "😓", "😔", "😕", "🙃", "🤑", "😲", "☹️",
+    "🙁", "😖", "😞", "😟", "😤", "😢", "😭", "😦", "😧", "😨",
+    "😩", "🤯", "😬", "😰", "😱", "🥵", "🥶", "😳", "🤪", "😵",
+    "😡", "😠", "🤬", "😷", "🤒", "🤕", "🤢", "🤮", "🥴", "🤧",
+    "😇", "🤠", "🤡", "🤥", "🤫", "🤭", "🫢", "🫣", "🤓", "🧐",
+    "😈", "👿", "👹", "👺", "💀", "👻", "👽", "🤖", "💩", "🔥",
+    "✨", "🌈", "🎉", "🎊", "💫", "🪐", "🦄"
+  ];
+
+  emojiList.forEach(emoji => {
+    const span = document.createElement("span");
+    span.textContent = emoji;
+    span.classList.add("emoji");
+    span.addEventListener("click", () => {
+      messageInput.value += emoji;
+    });
+    emojiPanel.appendChild(span);
+  });
+
+  startChatBtn.addEventListener("click", startChat);
+  nicknameInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") startChat();
+  });
+
+  function startChat() {
+    nickname = nicknameInput.value.trim();
+    if (!nickname) return;
+
+    login.classList.remove("active");
+
+    // Mensaje de bienvenida
+    const loadingMsg = document.createElement("div");
+    loadingMsg.textContent = `🌟 Bienvenido ${nickname}, cargando tu chat...`;
+    loadingMsg.style.cssText = `
+      color: white;
+      font-size: 24px;
+      background-color: rgba(0,0,0,0.6);
+      padding: 20px 40px;
+      border-radius: 20px;
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    `;
+    document.body.appendChild(loadingMsg);
+
+    const newUser = push(usersRef, { nickname: nickname, timestamp: Date.now() });
+    userKey = newUser.key;
+
+    onDisconnect(newUser).remove();
+
+    setTimeout(() => {
+      document.body.removeChild(loadingMsg);
+      chat.classList.add("active");
+    }, 2000);
+  }
+
+  function send() {
+    const text = messageInput.value.trim();
+    if (!text) return;
+
+    let isBad = badWords.some(word => text.toLowerCase().includes(word));
+    if (isBad) {
+      warnings++;
+      alert(`¡No uses palabras ofensivas! Aviso ${warnings} de 5.`);
+      if (warnings >= 5) {
+        alert("Has sido expulsado del chat por lenguaje inapropiado.");
+        if (userKey) remove(ref(db, `usuarios/${userKey}`));
+        location.reload();
+        return;
+      }
+      messageInput.value = "";
+      return;
+    }
+
+    push(messagesRef, {
+      sender: nickname,
+      text: text
+    });
+    messageInput.value = "";
+  }
+
+  sendMessage.addEventListener("click", send);
+  messageInput.addEventListener("keypress", e => {
+    if (e.key === "Enter") send();
+  });
+
+  onChildAdded(messagesRef, data => {
+    const msg = data.val();
+    const div = document.createElement("div");
+    div.classList.add("message");
+    div.classList.add(msg.sender === nickname ? "mine" : "theirs");
+    div.innerHTML = `<span class='sender'>${msg.sender}</span>${msg.text}`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  });
+
+  onChildAdded(usersRef, () => {
+    usersCount++;
+    counter.textContent = `Usuarios: ${usersCount}`;
+  });
+
+  onChildRemoved(usersRef, data => {
+    const removedUser = data.val();
+    usersCount--;
+    counter.textContent = `Usuarios: ${usersCount}`;
+
+    const div = document.createElement("div");
+    div.classList.add("message", "theirs");
+    div.innerHTML = `<span class='sender'></span>💨 ${removedUser.nickname} se ha ido del chat...`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  });
+</script>
