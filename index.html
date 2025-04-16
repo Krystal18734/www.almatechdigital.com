@@ -1,52 +1,75 @@
+<!-- PRELOADER CON UN SOLO CORAZÓN ROJO Y TEXTO -->
+<div id="preloader" class="fixed inset-0 flex flex-col items-center justify-center bg-white z-50">
+  <svg class="w-16 h-16 text-red-500 heartbeat mb-4" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/>
+  </svg>
+  <p class="text-gray-600 text-lg font-medium animate-fade-in">Cargando con el corazón...</p>
+</div>
+<style>
+  .heartbeat {
+    animation: heartbeat 1.4s infinite;
+    transform-origin: center;
+  }
+
+  @keyframes heartbeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.2); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.2); }
+    70% { transform: scale(1); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 1.5s ease-in-out;
+  }
+</style>
+<script>
+  window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    preloader.style.opacity = '0';
+    preloader.style.transition = 'opacity 0.8s ease';
+
+    setTimeout(() => {
+      preloader.style.display = 'none';
+    }, 800);
+  });
+</script>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Tecnología con Alma - Diseño sensorial para mentes neurodivergentes.">
-  <meta name="keywords" content="tecnología, diseño sensorial, neurodivergentes, inclusión, app emocional">
   <title>Tecnología con Alma</title>
-
-  <!-- ✅ Favicon para pestaña del navegador -->
-  <link rel="icon" type="image/png" href="favicon.png" />
-
-  <!-- Metadatos para SEO y redes sociales -->
-  <meta property="og:image" content="https://github.com/Krystal18734/www.almatechdigital.com/raw/main/favicon.png">
-  <meta property="og:title" content="Tecnología con Alma">
-  <meta property="og:description" content="Diseño sensorial para mentes neurodivergentes. Innovación no solo en lo que se crea, sino para quién se crea.">
-  
-  <!-- Link de TailwindCSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
   <style>
-    /* Estilos adicionales */
     .emotion-box {
       transition: transform 0.2s ease-in-out;
     }
     .emotion-box:hover {
       transform: scale(1.05);
     }
-
-    .chat-button {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 12px 24px;
-      background-color: #ffccd5;
-      color: #333;
-      border-radius: 12px;
-      font-size: 1.2rem;
-      text-decoration: none;
-      transition: background-color 0.3s ease;
-    }
-
-    .chat-button:hover {
-      background-color: #ffc1cb;
-    }
-  </style>
+  .chat-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 12px 24px;
+  background-color: #ffccd5;
+  color: #333;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+.chat-button:hover {
+  background-color: #ffc1cb;
+}
+</style>
 </head>
-
 <body class="bg-gradient-to-b from-indigo-100 to-white min-h-screen p-6 text-gray-800">
-
   <main class="max-w-4xl mx-auto text-center space-y-6">
     <h1 class="text-4xl md:text-6xl font-bold text-indigo-700">Tecnología con Alma</h1>
     <p class="text-lg md:text-xl text-gray-600">
@@ -70,50 +93,59 @@
     </section>
 
     <section class="bg-white shadow-xl rounded-2xl p-6 mt-6">
-      <p class="text-lg italic mb-4">
-        —No buscamos crear robots perfectos. Buscamos crear puentes… para que corazones como el mío no tengan que esconderse para ser tomados en serio.
-      </p>
-      <a href="mas.html">
-        <button class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-6 py-2 text-lg flex items-center justify-center mx-auto mb-4">
-          ✨ Descubre más
-        </button>
-      </a>
-      <a href="chat.html" class="chat-button">
-        💬 Ir al Chat con Alma
-      </a>
-    </section>
+  <p class="text-lg italic mb-4">
+    —No buscamos crear robots perfectos. Buscamos crear puentes… para que corazones como el mío no tengan que esconderse para ser tomados en serio.
+  </p>
+  <a href="mas.html">
+    <button class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-6 py-2 text-lg flex items-center justify-center mx-auto mb-4">
+      ✨ Descubre más
+    </button>
+  </a>
+  <a href="chat.html" class="chat-button">
+    💬 Ir al Chat con Alma
+  </a>
+</section>
 
     <section class="mt-16 text-center">
       <h2 class="text-xl font-semibold mt-10 mb-4">💬 Expresa tu emoción</h2>
-      <div class="flex flex-wrap gap-4">
-        <button onclick="showEmotion('Feliz')" class="bg-yellow-300 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">😊 Feliz</button>
-        <button onclick="showEmotion('Triste')" class="bg-blue-300 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">😢 Triste</button>
-        <button onclick="showEmotion('Ansioso')" class="bg-red-300 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">😰 Ansioso</button>
-        <button onclick="showEmotion('Calmado')" class="bg-green-300 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">😌 Calmado</button>
-        <button onclick="showEmotion('Extraño')" class="bg-purple-300 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">🤔 Me siento extraño</button>
-        <button onclick="showEmotion('Molesto')" class="bg-orange-400 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">😠 Estoy molesto</button>
-      </div>
+<div class="flex flex-wrap gap-4">
+  <button onclick="showEmotion('Feliz')" class="bg-yellow-300 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">😊 Feliz</button>
+  <button onclick="showEmotion('Triste')" class="bg-blue-300 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">😢 Triste</button>
+  <button onclick="showEmotion('Ansioso')" class="bg-red-300 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">😰 Ansioso</button>
+  <button onclick="showEmotion('Calmado')" class="bg-green-300 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">😌 Calmado</button>
+  <button onclick="showEmotion('Extraño')" class="bg-purple-300 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">🤔 Me siento extraño</button>
+  <button onclick="showEmotion('Molesto')" class="bg-orange-400 rounded-xl text-lg p-4 shadow-md hover:scale-105 transition-transform">😠 Estoy molesto</button>
+</div>
 
-      <div id="emotionMessage" class="mt-6 text-md text-gray-700 font-medium leading-relaxed"></div>
+<div id="emotionMessage" class="mt-6 text-md text-gray-700 font-medium leading-relaxed"></div>
 
-      <script>
-        const messages = {
-          'Feliz': "¡Qué bonito sentir felicidad! No la escondas. Compártela con quienes amas y guarda este momento en tu corazón. 🤗 Te mando un abrazo muuuy fuerte desde la distancia.",
-          'Triste': "Está bien sentirse triste. No siempre necesitas una solución, a veces solo necesitas un espacio seguro para sentir. Aquí estás a salvo. 😢 Te mando un abrazo muuuy fuerte desde la distancia.",
-          'Ansioso': "Respira hondo. No estás solo. A veces la mente corre más rápido que el corazón, pero puedes volver a ti. 🧘‍♂️ Te mando un abrazo muuuy fuerte desde la distancia.",
-          'Calmado': "Ese momento de paz es un regalo. Disfrútalo. Puedes regresar a este espacio siempre que lo necesites. 🌿 Te mando un abrazo muuuy fuerte desde la distancia.",
-          'Extraño': "Sentirse extraño no te hace raro, te hace humano. Tu forma de sentir es única, y no necesitas encajar para ser valioso. 🤍 No es un abrazo, pero... te entiendo, y estoy contigo.",
-          'Molesto': "Estar molesto no te hace malo. Tu enojo también merece ser escuchado con respeto. Puedes transformarlo en algo que te defienda sin herir. 🔥 Aquí hay un espacio seguro. Te mando fuerza… y un abrazo suave desde la distancia."
-        };
+<script>
+  const messages = {
+    'Feliz': "¡Qué bonito sentir felicidad! No la escondas. Compártela con quienes amas y guarda este momento en tu corazón. 🤗 Te mando un abrazo muuuy fuerte desde la distancia.",
+    'Triste': "Está bien sentirse triste. No siempre necesitas una solución, a veces solo necesitas un espacio seguro para sentir. Aquí estás a salvo. 😢 Te mando un abrazo muuuy fuerte desde la distancia.",
+    'Ansioso': "Respira hondo. No estás solo. A veces la mente corre más rápido que el corazón, pero puedes volver a ti. 🧘‍♂️ Te mando un abrazo muuuy fuerte desde la distancia.",
+    'Calmado': "Ese momento de paz es un regalo. Disfrútalo. Puedes regresar a este espacio siempre que lo necesites. 🌿 Te mando un abrazo muuuy fuerte desde la distancia.",
+    'Extraño': "Sentirse extraño no te hace raro, te hace humano. Tu forma de sentir es única, y no necesitas encajar para ser valioso. 🤍 No es un abrazo, pero... te entiendo, y estoy contigo.",
+    'Molesto': "Estar molesto no te hace malo. Tu enojo también merece ser escuchado con respeto. Puedes transformarlo en algo que te defienda sin herir. 🔥 Aquí hay un espacio seguro. Te mando fuerza… y un abrazo suave desde la distancia."
+  };
 
-        function showEmotion(emotion) {
-          const message = messages[emotion];
-          const container = document.getElementById('emotionMessage');
-          container.innerHTML = `<div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-indigo-400 animate-fade-in">${message}</div>`;
-        }
-      </script>
-    </section>
-  </main>
+  function showEmotion(emotion) {
+    const message = messages[emotion];
+    const container = document.getElementById('emotionMessage');
+    container.innerHTML = `<div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-indigo-400 animate-fade-in">${message}</div>`;
+  }
+</script>
+
+<style>
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out;
+  }
+</style>
 </body>
 </html>
 
